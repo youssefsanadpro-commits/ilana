@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour Ilana ❤️</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,pink,hotpink);
+    text-align:center;
+    overflow:hidden;
+    height:100vh;
+}
+.container{padding-top:18vh;}
+h1{
+    color:white;
+    font-size:26px;
+    padding:20px;
+    text-shadow:2px 2px 6px red;
+    white-space:pre-line;
+}
+button{
+    font-size:20px;
+    padding:14px 30px;
+    margin:10px;
+    border:none;
+    border-radius:40px;
+    width:80%;
+    max-width:320px;
+}
+.start{background:white;color:hotpink;}
+.oui{background:red;color:white;}
+.non{background:white;color:hotpink;position:absolute;}
+
+.choice{background:white;color:hotpink;}
+.choice.selected{background:red;color:white;}
+
+.heart,.confetti{
+    position:fixed;
+    top:-20px;
+    animation:fall linear infinite;
+    pointer-events:none;
+}
+.heart{font-size:22px;}
+.confetti{width:10px;height:10px;}
+
+@keyframes fall{
+    to{transform:translateY(110vh) rotate(360deg);opacity:0;}
+}
+
+.firework{
+    position:fixed;
+    width:8px;height:8px;
+    background:gold;border-radius:50%;
+    animation:explode 1s ease-out forwards;
+}
+@keyframes explode{
+    to{transform:scale(6);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="startScreen">
+    <h1>Ilana ❤️\nAvant de commencer…\nactive le son 🎵❤️</h1>
+    <button class="start" onclick="start()">Commencer ❤️</button>
+</div>
+
+<div class="container" id="game" style="display:none;">
+    <h1 id="question">Ilana ❤️ j’ai un petit jeu pour toi… 👀❤️</h1>
+    <div id="buttons">
+        <button class="oui" onclick="oui()">Oui ❤️</button>
+        <button class="non" onclick="non()">Non 💔</button>
+    </div>
+</div>
+
+<!-- 🎵 MUSIQUE ROMANTIQUE -->
+<audio id="music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/10/30/audio_946b9c6e7c.mp3">
+</audio>
+
+<script>
+let step=0, nonCount=0, selections=[];
+
+const questions=[
+"Ilana ❤️ est-ce que t’aimes quand je te fais sourire ? 😏❤️",
+"Ilana ❤️ est-ce que tu ressens un truc spécial entre nous ? 👀❤️",
+"Ilana ❤️ est-ce que tu te doutes de ce qui arrive ? 😌❤️",
+"Ilana ❤️ est-ce que tu fais semblant de ne pas être impatiente ? 😈❤️",
+"Ilana ❤️ est-ce que tu sais que le 14 approche très vite ? ⏳❤️",
+"Ilana ❤️ est-ce que tu sens que ça va être un super moment ? 💖"
+];
+
+function start(){
+    document.getElementById("music").play();
+    document.getElementById("startScreen").style.display="none";
+    document.getElementById("game").style.display="block";
+}
+
+function oui(){
+    if(step < questions.length){
+        question.innerText = questions[step];
+        step++;
+
+        if(step === questions.length){
+            buttons.innerHTML = `<button class="oui" onclick="choixActivites()">Continuer ❤️</button>`;
+        }
+    }
+}
+
+function non(){
+    nonCount++;
+    if(nonCount>=4){
+        document.querySelector(".non").style.display="none";
+        question.innerText="Ilana ❤️ tu n’as pas le choix 👹 clique sur OUI";
+        return;
+    }
+    question.innerText="Ilana ❤️ j’y crois pas 😏❤️";
+}
+
+function choixActivites(){
+    question.innerText="Ilana ❤️ choisis 2 ou 3 choses 💖";
+    buttons.innerHTML=`
+        <button class="choice" onclick="toggle(this)">🚗 Se poser dans la voiture tranquille</button>
+        <button class="choice" onclick="toggle(this)">🌙 Se poser sur un banc calme</button>
+        <button class="choice" onclick="toggle(this)">🎬 Aller au cinéma</button>
+        <button class="choice" onclick="toggle(this)">🍽️ Manger dans un restaurant</button>
+        <button class="choice" onclick="toggle(this)">🍔 Manger dans la voiture</button>
+        <button class="oui" onclick="fin()">Continuer ❤️</button>
+    `;
+}
+
+function toggle(b){
+    b.classList.toggle("selected");
+    if(b.classList.contains("selected")) selections.push(b.innerText);
+    else selections = selections.filter(x=>x!==b.innerText);
+}
+
+function fin(){
+    question.innerText =
+    "C’est bon ❤️\n\nIlana ❤️ tu as choisi :\n\n"+
+    selections.join(" ❤️\n")+
+    "\n\n📸 Fais une capture d’écran et envoie-la moi\n"+
+    "j’ai pas réussi à coder pour recevoir tes réponses… je suis nul 😂❤️\n\n"+
+    "Ilana ❤️ je t’aime.\nOublie pas de me dire ce que tu en penses 😌❤️";
+    buttons.innerHTML="";
+    confettis(); feux();
+}
+
+/* animations */
+setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart"; h.innerText="❤️";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=(Math.random()*2+3)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+},220);
+
+setInterval(()=>{
+    const n=document.querySelector(".non");
+    if(!n) return;
+    n.style.left=Math.random()*(innerWidth-140)+"px";
+    n.style.top=Math.random()*(innerHeight-80)+"px";
+},500);
+
+function confettis(){
+    setInterval(()=>{
+        const c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=Math.random()*100+"vw";
+        c.style.background=["red","pink","white","yellow"][Math.floor(Math.random()*4)];
+        c.style.animationDuration=(Math.random()*2+2)+"s";
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),4000);
+    },120);
+}
+function feux(){
+    setInterval(()=>{
+        const f=document.createElement("div");
+        f.className="firework";
+        f.style.left=Math.random()*100+"vw";
+        f.style.top=Math.random()*50+"vh";
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(),1000);
+    },500);
+}
+</script>
+</body>
+</html>
